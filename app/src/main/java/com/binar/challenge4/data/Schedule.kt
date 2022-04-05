@@ -9,9 +9,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Schedule(
     @PrimaryKey(autoGenerate = true) var id: Int?,
-    var event_type: String,
-    var description: String,
-    var date_millis: Long,
-    var start_time: String,
-    var end_time: String
+    var event_type: String
+//    var description: String,
+//    var date_millis: Long,
+//    var start_time: String,
+//    var end_time: String
 ): Parcelable
