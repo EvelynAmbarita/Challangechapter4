@@ -40,15 +40,16 @@
         android:label="fragment_list_schedule"
         tools:layout="@layout/fragment_list_schedule" >
         <action
-            android:id="@+id/action_listScheduleFragment_to_formFragment"
-            app:destination="@id/formFragment" />
+            android:id="@+id/action_listScheduleFragment_to_formFragment2"
+            app:destination="@id/formFragment2" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.binar.challenge4.ui.auth.RegisterFragment"
         android:label="RegisterFragment" />
-    <fragment
-        android:id="@+id/formFragment"
+    <dialog
+        android:id="@+id/formFragment2"
         android:name="com.binar.challenge4.ui.form.FormFragment"
         android:label="FormFragment" />
+
 </navigation>

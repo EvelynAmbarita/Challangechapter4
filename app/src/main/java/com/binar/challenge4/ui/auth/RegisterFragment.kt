@@ -14,6 +14,7 @@ import com.binar.challenge4.data.User
 import com.binar.challenge4.database.MyDatabase
 import com.binar.challenge4.databinding.FragmentLoginBinding
 import com.binar.challenge4.databinding.FragmentRegisterBinding
+import com.binar.challenge4.utils.AESEncyption
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -43,7 +44,9 @@ class RegisterFragment : Fragment() {
             val nama = binding.etUsername.text.toString()
             val password = binding.etPassword.text.toString()
 
-            val user = User(null,nama,email,password)
+            val encryptedPassword = AESEncyption.encrypt(password).toString()
+
+            val user = User(null,nama,email,encryptedPassword)
 
             lifecycleScope.launch(Dispatchers.IO) {
                 

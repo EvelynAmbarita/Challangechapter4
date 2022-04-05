@@ -13,6 +13,7 @@ import androidx.navigation.findNavController
 import com.binar.challenge4.MainActivity
 import com.binar.challenge4.database.MyDatabase
 import com.binar.challenge4.databinding.FragmentLoginBinding
+import com.binar.challenge4.utils.AESEncyption
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -43,7 +44,8 @@ class LoginFragment : Fragment() {
 
         binding.btnLogin.setOnClickListener {
             val username = binding.etEmail.text.toString()
-            val password = binding.etPassword.text.toString()
+            val rawPassword = binding.etPassword.text.toString()
+            val password = AESEncyption.encrypt(rawPassword).toString()
 
             lifecycleScope.launch(Dispatchers.IO) {
                 val isLogin = myDatabase?.userDao()?.login(username, password)

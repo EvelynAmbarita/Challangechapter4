@@ -10,11 +10,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.binar.challenge4.MainActivity
 import com.binar.challenge4.R
+import com.binar.challenge4.data.Schedule
 import com.binar.challenge4.database.MyDatabase
 import com.binar.challenge4.databinding.FragmentListScheduleBinding
 import com.binar.challenge4.databinding.FragmentRegisterBinding
+import com.binar.challenge4.ui.form.FormFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -25,9 +28,9 @@ class ListScheduleFragment : Fragment() {
 
     private var _binding: FragmentListScheduleBinding? = null
     private var myDatabase: MyDatabase? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+
+    private var adapter:ScheduleAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +39,11 @@ class ListScheduleFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentListScheduleBinding.inflate(inflater,container, false)
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchData()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,8 +63,27 @@ class ListScheduleFragment : Fragment() {
         fetchStudent()
 
         binding.floatingActionButton.setOnClickListener {
-            val action = ListScheduleFragmentDirections.actionListScheduleFragmentToFormFragment()
-            it.findNavController().navigate(action)
+
+            val dialog = FormFragment{
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val result = myDatabase?.scheduleDao()?.insertSchedule(it)
+                    activity?.runOnUiThread {
+                        if (result == (0).toLong()){
+                            Toast.makeText(context,
+                                "gagal insert", Toast.LENGTH_SHORT).show()
+                        }else{
+                            Toast.makeText(context,
+                                "sukses insert", Toast.LENGTH_SHORT).show()
+                            fetchStudent()
+                        }
+                    }
+                }
+            }
+
+            dialog.show(parentFragmentManager,"dialog")
+
+//            val action = ListScheduleFragmentDirections.actionListScheduleFragmentToFormFragment2()
+//            it.findNavController().navigate(action)
         }
 
 
@@ -77,7 +104,7 @@ class ListScheduleFragment : Fragment() {
 
             activity?.runOnUiThread {
                 listStudent?.let {
-                    val adapter = ScheduleAdapter(it, {}, {})
+                    adapter = ScheduleAdapter(it, {}, {})
                     binding.rvSchedule.adapter = adapter
                 }
             }
