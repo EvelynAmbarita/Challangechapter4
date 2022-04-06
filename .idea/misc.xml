@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/fafir/StudioProjects/challenge-4-binar/app/src/main/res/drawable/dialog_background.xml" value="0.204" />
+        <entry key="..\:/Users/fafir/StudioProjects/challenge-4-binar/app/src/main/res/drawable/dialog_placeholder.xml" value="0.204" />
         <entry key="..\:/Users/fafir/StudioProjects/challenge-4-binar/app/src/main/res/layout/activity_main.xml" value="0.1875" />
         <entry key="..\:/Users/fafir/StudioProjects/challenge-4-binar/app/src/main/res/layout/fragment_form.xml" value="0.1875" />
         <entry key="..\:/Users/fafir/StudioProjects/challenge-4-binar/app/src/main/res/layout/fragment_list_schedule.xml" value="0.1875" />

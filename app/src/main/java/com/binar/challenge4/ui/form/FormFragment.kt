@@ -18,6 +18,8 @@ import com.binar.challenge4.database.MyDatabase
 import com.binar.challenge4.databinding.FragmentFormBinding
 import com.binar.challenge4.databinding.FragmentListScheduleBinding
 import com.binar.challenge4.ui.list.ScheduleAdapter
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -25,43 +27,57 @@ import kotlinx.coroutines.launch
 import java.lang.IllegalStateException
 
 
-class FormFragment(private val saveClick:(Schedule)->Unit) : DialogFragment() {
+class FormFragment(private val saveClick:(Schedule)->Unit) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentFormBinding? = null
     private var myDatabase: MyDatabase? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
+    override fun getTheme(): Int  = R.style.SheetDialog
 
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
-        myDatabase = MyDatabase.getInstance(requireContext())
-        _binding = FragmentFormBinding.inflate(layoutInflater)
-        return activity?.let {
-            val builder = AlertDialog.Builder(it)
-            builder.setView(binding.root)
-            binding.apply {
-                btnSave.setOnClickListener {
-                    val schedule = Schedule(null, etNama.text.toString())
-                    saveClick(schedule)
-                    dialog?.dismiss()
-                }
-            }
-            builder.create()
-        }?:throw IllegalStateException("Activity cannot be null")
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentFormBinding.inflate(inflater,container,false)
+        return binding.root
 
     }
+
+
+//    val builder = BottomSheetDialog(requireContext(),R.style.SheetDialog)
+//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+//
+//        myDatabase = MyDatabase.getInstance(requireContext())
+//        _binding = FragmentFormBinding.inflate(layoutInflater)
+//
+//        val bottomSheet = BottomSheetDialog(requireContext(),R.style.SheetDialog)
+//
+//
+//        return activity?.let {
+//            val builder = AlertDialog.Builder(it)
+//            builder.setView(binding.root)
+//            binding.apply {
+//                btnSave.setOnClickListener {
+//                    val schedule = Schedule(null, etNama.text.toString())
+//                    saveClick(schedule)
+//                    dialog?.dismiss()
+//                }
+//            }
+//            builder.create()
+//        }?:throw IllegalStateException("Activity cannot be null")
+//
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
-
-//        val schedule: Schedule? = intent.getParcelableExtra("schedule")
-
+        binding.btnSave.setOnClickListener {
+            val schedule = Schedule(null, binding.etNama.text.toString())
+            saveClick(schedule)
+            dismiss()
+        }
 
 //        if (schedule ==null){
 //            //do add

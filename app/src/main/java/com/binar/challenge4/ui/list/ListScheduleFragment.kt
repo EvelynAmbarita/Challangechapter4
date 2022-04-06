@@ -30,12 +30,12 @@ class ListScheduleFragment : Fragment() {
     private var myDatabase: MyDatabase? = null
     private val binding get() = _binding!!
 
-    private var adapter:ScheduleAdapter? = null
+    private lateinit var adapter:ScheduleAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentListScheduleBinding.inflate(inflater,container, false)
         return binding.root
@@ -51,6 +51,40 @@ class ListScheduleFragment : Fragment() {
 
         myDatabase = MyDatabase.getInstance(requireContext())
 
+
+        adapter = ScheduleAdapter(
+            delClick = { schedule ->
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val result = myDatabase?.scheduleDao()?.deleteSchedule(schedule)
+
+                    activity?.runOnUiThread {
+                        if (result == 0) {
+                            Toast
+                                .makeText(
+                                    context,
+                                    "gagal delete",
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+                        } else {
+                            Toast
+                                .makeText(
+                                    context,
+                                    "berhasil delete",
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+                            fetchData()
+                        }
+                    }
+
+                }
+            },
+            editClick = {schedule ->
+
+            })
+        binding.rvSchedule.adapter = adapter
+
         val sharedPreference = requireContext()
             .getSharedPreferences(MainActivity.SHARED_FILE, Context.MODE_PRIVATE)
 
@@ -60,7 +94,7 @@ class ListScheduleFragment : Fragment() {
 //            editor.apply()
 //        }
 
-        fetchStudent()
+        fetchSchedule()
 
         binding.floatingActionButton.setOnClickListener {
 
@@ -74,7 +108,7 @@ class ListScheduleFragment : Fragment() {
                         }else{
                             Toast.makeText(context,
                                 "sukses insert", Toast.LENGTH_SHORT).show()
-                            fetchStudent()
+                            fetchData()
                         }
                     }
                 }
@@ -82,14 +116,12 @@ class ListScheduleFragment : Fragment() {
 
             dialog.show(parentFragmentManager,"dialog")
 
-//            val action = ListScheduleFragmentDirections.actionListScheduleFragmentToFormFragment2()
-//            it.findNavController().navigate(action)
         }
 
 
     }
 
-    private fun fetchStudent(){
+    private fun fetchSchedule(){
         fetchData()
 //        binding.floatingActionButton.setOnClickListener {
 //            val intent = Intent(this, FormActivity::class.java)
@@ -104,8 +136,7 @@ class ListScheduleFragment : Fragment() {
 
             activity?.runOnUiThread {
                 listStudent?.let {
-                    adapter = ScheduleAdapter(it, {}, {})
-                    binding.rvSchedule.adapter = adapter
+                    adapter.submitList(it)
                 }
             }
 
