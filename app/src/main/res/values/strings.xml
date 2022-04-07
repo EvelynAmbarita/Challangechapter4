@@ -2,4 +2,16 @@
     <string name="app_name">Challenge 4</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="outdated_schedule"><strike>%s</strike></string>
+
+    <string-array name="jenis_acara">
+        <item>pilih jenis acara</item>
+        <item>Wedding</item>
+        <item>Gradutaion</item>
+        <item>Seminar</item>
+        <item>Ceremony</item>
+        <item>Other</item>
+    </string-array>
+
 </resources>

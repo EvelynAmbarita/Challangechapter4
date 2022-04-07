@@ -43,19 +43,20 @@ class LoginFragment : Fragment() {
             .getSharedPreferences(MainActivity.SHARED_FILE, Context.MODE_PRIVATE)
 
         binding.btnLogin.setOnClickListener {
-            val username = binding.etEmail.text.toString()
+            val email = binding.etEmail.text.toString()
             val rawPassword = binding.etPassword.text.toString()
             val password = AESEncyption.encrypt(rawPassword).toString()
 
             lifecycleScope.launch(Dispatchers.IO) {
-                val isLogin = myDatabase?.userDao()?.login(username, password)
+                val isLogin = myDatabase?.userDao()?.login(email, password)
 
                 activity?.runOnUiThread {
                     if (isLogin == null){
-                        Toast.makeText(context, "Pastikan username dan password benar", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Pastikan email dan password benar", Toast.LENGTH_SHORT).show()
                     }else{
                         val editor = sharedPreference.edit()
-                        editor.putString("username",username)
+                        editor.putString("email",email)
+                        editor.putString("name",isLogin.name)
                         editor.apply()
                         val action = LoginFragmentDirections
                             .actionLoginFragmentToListScheduleFragment()

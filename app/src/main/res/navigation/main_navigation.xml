@@ -13,11 +13,15 @@
         <action
             android:id="@+id/action_splashFragment_to_loginFragment"
             app:destination="@id/loginFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popEnterAnim="@anim/slide_in_right"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_splashFragment_to_listScheduleFragment"
             app:destination="@id/listScheduleFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popEnterAnim="@anim/slide_in_right"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -27,21 +31,37 @@
         android:label="LoginFragment" >
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
+            app:destination="@id/registerFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:popEnterAnim="@anim/slide_in_right"/>
         <action
             android:id="@+id/action_loginFragment_to_listScheduleFragment"
             app:destination="@id/listScheduleFragment"
             app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_left"
+            app:popEnterAnim="@anim/slide_in_right"/>
     </fragment>
     <fragment
         android:id="@+id/listScheduleFragment"
         android:name="com.binar.challenge4.ui.list.ListScheduleFragment"
         android:label="fragment_list_schedule"
-        tools:layout="@layout/fragment_list_schedule" />
+        tools:layout="@layout/fragment_list_schedule" >
+        <action
+            android:id="@+id/action_listScheduleFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/listScheduleFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_left"/>
+    </fragment>
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.binar.challenge4.ui.auth.RegisterFragment"
-        android:label="RegisterFragment" />
+        android:label="RegisterFragment"
+        app:enterAnim="@anim/slide_in_left"
+        app:exitAnim="@android:anim/fade_out"
+        app:popEnterAnim="@anim/slide_in_right"
+        app:popExitAnim="@android:anim/fade_out"/>
 
 </navigation>
