@@ -42,7 +42,7 @@ class RegisterFragment : Fragment() {
 
         binding.btnRegister.setOnClickListener {
 
-            if ((binding.etPassword.text.toString() != binding.etPassword2.text.toString()) and
+            if ((binding.etPassword.text.toString() == binding.etPassword2.text.toString()) and
                     binding.etEmail.isValid() and binding.etUsername.isValid() and
                     binding.etPassword.isValid()){
 
