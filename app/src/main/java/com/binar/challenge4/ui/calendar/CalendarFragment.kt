@@ -7,7 +7,7 @@ import android.widget.DatePicker
 import androidx.fragment.app.DialogFragment
 import java.util.*
 
-class CalendarFragment(val date: Long, val onDateSet: (Long)->Unit) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+class CalendarFragment(val dateMillis:Long, val date: Long, val onDateSet: (Long)->Unit) : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -16,7 +16,7 @@ class CalendarFragment(val date: Long, val onDateSet: (Long)->Unit) : DialogFrag
         c.timeInMillis = date
         // Create a new instance of DatePickerDialog and return it
         val datePicker = DatePickerDialog(requireContext(), this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH))
-//        datePicker.datePicker.minDate = System.currentTimeMillis()
+        datePicker.datePicker.minDate = dateMillis
         return datePicker
     }
 

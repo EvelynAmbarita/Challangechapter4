@@ -87,7 +87,7 @@ class ScheduleAdapter(private val delClick:(Schedule)->Unit,
                 if (currentSchedule.description.isEmpty()){
                     binding.tvNote.visibility = View.GONE
                 }else{
-                    binding.tvNote.text = "Note:\n${currentSchedule.description}"
+                    binding.tvNote.text = "Note:\n ${currentSchedule.description}"
                 }
 
 
@@ -98,8 +98,6 @@ class ScheduleAdapter(private val delClick:(Schedule)->Unit,
                 val eventTime = EventTimeConverter.convert(currentSchedule.choosenTime)
 
                 tvEventTime.text = eventTime
-
-                tvNote.text = currentSchedule.description
 
                 tvEventTime
                 binding.btnEdit.setOnClickListener {

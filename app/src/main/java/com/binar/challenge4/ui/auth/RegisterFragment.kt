@@ -15,6 +15,7 @@ import com.binar.challenge4.database.MyDatabase
 import com.binar.challenge4.databinding.FragmentLoginBinding
 import com.binar.challenge4.databinding.FragmentRegisterBinding
 import com.binar.challenge4.utils.AESEncyption
+import com.binar.challenge4.utils.ValidationForm.isValid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -40,27 +41,36 @@ class RegisterFragment : Fragment() {
         myDatabase = MyDatabase.getInstance(requireContext())
 
         binding.btnRegister.setOnClickListener {
-            val email = binding.etEmail.text.toString()
-            val nama = binding.etUsername.text.toString()
-            val password = binding.etPassword.text.toString()
 
-            val encryptedPassword = AESEncyption.encrypt(password).toString()
+            if ((binding.etPassword.text.toString() != binding.etPassword2.text.toString()) and
+                    binding.etEmail.isValid() and binding.etUsername.isValid() and
+                    binding.etPassword.isValid()){
 
-            val user = User(null,nama,email,encryptedPassword)
+                val email = binding.etEmail.text.toString()
+                val nama = binding.etUsername.text.toString()
+                val password = binding.etPassword.text.toString()
 
-            lifecycleScope.launch(Dispatchers.IO) {
-                
-                val isEmailExist = myDatabase?.userDao()?.checkEmailExist(email)
+                val encryptedPassword = AESEncyption.encrypt(password).toString()
 
-                activity?.runOnUiThread { 
-                    if (isEmailExist == null){
-                        registerUser(user)
-                    }else{
-                        Toast.makeText(context, "Email sudah didaftarkan", Toast.LENGTH_SHORT).show()
+                val user = User(null,nama,email,encryptedPassword)
+
+                lifecycleScope.launch(Dispatchers.IO) {
+
+                    val isEmailExist = myDatabase?.userDao()?.checkEmailExist(email)
+
+                    activity?.runOnUiThread {
+                        if (isEmailExist == null){
+                            registerUser(user)
+                        }else{
+                            Toast.makeText(context, "Email sudah didaftarkan", Toast.LENGTH_SHORT).show()
+                        }
                     }
+
                 }
 
             }
+
+
         }
 
     }

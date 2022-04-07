@@ -25,6 +25,8 @@ import com.binar.challenge4.ui.calendar.CalendarFragment
 import com.binar.challenge4.ui.list.ScheduleAdapter
 import com.binar.challenge4.utils.DateConverter
 import com.binar.challenge4.utils.SetIdSpinner
+import com.binar.challenge4.utils.ValidationForm
+import com.binar.challenge4.utils.ValidationForm.isValidOnly
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -98,7 +100,7 @@ class FormFragment(private val schedule: Schedule?): BottomSheetDialogFragment()
 
 
         binding.btnCalendar.setOnClickListener {
-            val calendarFragment = CalendarFragment(dateMillis){
+            val calendarFragment = CalendarFragment(System.currentTimeMillis(), dateMillis){
                 dateMillis = it
                 val dateStr = DateConverter.convertMillisToString(it)
                 binding.etTglEvent.setText(dateStr)
@@ -158,6 +160,16 @@ class FormFragment(private val schedule: Schedule?): BottomSheetDialogFragment()
 
     private fun editData(schedule: Schedule){
         binding.apply {
+
+            btnCalendar.setOnClickListener {
+                val calendarFragment = CalendarFragment(0, dateMillis){
+                    dateMillis = it
+                    val dateStr = DateConverter.convertMillisToString(it)
+                    binding.etTglEvent.setText(dateStr)
+                }
+                calendarFragment.show(parentFragmentManager, "datePicker")
+            }
+
             var jenisAcara = ""
             val idSpinner = SetIdSpinner.setIdSpinner(schedule.eventType)
             spJenisAcara.setSelection(idSpinner)
@@ -217,71 +229,39 @@ class FormFragment(private val schedule: Schedule?): BottomSheetDialogFragment()
 
                     }
                 }
-
-
-
             }
-
             etTglEvent.setText(schedule.eventDate)
-
-
-
-//            val availabelChoosenTime = ArrayList<String>()
-//            availabelChoosenTime.add("1")
-//            availabelChoosenTime.add("2")
-//            availabelChoosenTime.add("3")
-//
-//            lifecycleScope.launch(Dispatchers.IO){
-//                val selectedDateList = myDatabase?.scheduleDao()?.getSelectedDaySchedule(schedule.eventDate)
-//                activity?.runOnUiThread {
-//                    selectedDateList?.forEach { currentDate ->
-//                        if (currentDate.id != schedule.id){
-//
-//                            val selectedChoosenTime = currentDate.choosenTime.split(",").map {
-//                                it.trim()
-//                            }
-//                            selectedChoosenTime.forEach {
-//                                Log.i("testremoved", it)
-//                                availabelChoosenTime.remove(it)
-//                                Log.i("testremove",availabelChoosenTime.toString())
-//                            }
-//                        }
-//                    }
-//
-//                    cbMorning.isEnabled = availabelChoosenTime.contains("1")
-//                    cbAfternoon.isEnabled = availabelChoosenTime.contains("2")
-//                    cbNight.isEnabled = availabelChoosenTime.contains("3")
-//
-//                }
-//            }
-
-//            Log.i("testremoveout",availabelChoosenTime.toString())
-
-
-
-
-
             etDeskripsi.setText(schedule.description)
-
-
 
             btnSave.setOnClickListener {
 
-                jenisAcara = if (idSpinner==5){
-                    etJenisAcara.text.toString()
+                if (ValidationForm.eventTypeValid(binding.spJenisAcara, binding.etJenisAcara) and
+                    (binding.cbAfternoon.isValidOnly() or
+                            binding.cbMorning.isValidOnly() or
+                            binding.cbNight.isValidOnly())){
+
+                    jenisAcara = if (idSpinner==5){
+                        etJenisAcara.text.toString()
+                    }else{
+                        spJenisAcara.selectedItem.toString()
+                    }
+
+                    val newSchedule =
+                        Schedule(schedule.id,
+                            jenisAcara,
+                            binding.etTglEvent.text.toString(),
+                            dateMillis,
+                            choosenTime.sorted().joinToString(),
+                            binding.etDeskripsi.text.toString())
+                    editClick(newSchedule)
+                    dismiss()
+
                 }else{
-                    spJenisAcara.selectedItem.toString()
+                    Toast.makeText(context, "Harap isi dengan lengkap", Toast.LENGTH_SHORT).show()
                 }
 
-                val newSchedule =
-                    Schedule(schedule.id,
-                        jenisAcara,
-                        binding.etTglEvent.text.toString(),
-                        dateMillis,
-                        choosenTime.sorted().joinToString(),
-                        binding.etDeskripsi.text.toString())
-                editClick(newSchedule)
-                dismiss()
+
+
             }
 
         }
@@ -289,6 +269,14 @@ class FormFragment(private val schedule: Schedule?): BottomSheetDialogFragment()
 
     private fun addData(){
 
+        binding.btnCalendar.setOnClickListener {
+            val calendarFragment = CalendarFragment(System.currentTimeMillis(), dateMillis){
+                dateMillis = it
+                val dateStr = DateConverter.convertMillisToString(it)
+                binding.etTglEvent.setText(dateStr)
+            }
+            calendarFragment.show(parentFragmentManager, "datePicker")
+        }
 
         binding.etTglEvent.addTextChangedListener {
 
@@ -337,28 +325,34 @@ class FormFragment(private val schedule: Schedule?): BottomSheetDialogFragment()
 
         binding.btnSave.setOnClickListener {
 
-            val idSpinner = binding.spJenisAcara.selectedItemPosition
+            if (ValidationForm.eventTypeValid(binding.spJenisAcara, binding.etJenisAcara) and
+                (binding.cbAfternoon.isValidOnly() or
+                    binding.cbMorning.isValidOnly() or
+                    binding.cbNight.isValidOnly())){
 
-            val jenisAcara = if (idSpinner==5){
-                binding.etJenisAcara.text.toString()
+                val idSpinner = binding.spJenisAcara.selectedItemPosition
+
+                val jenisAcara = if (idSpinner==5){
+                    binding.etJenisAcara.text.toString()
+                }else{
+                    binding.spJenisAcara.selectedItem.toString()
+                }
+
+                val schedule =
+                    Schedule(null,
+                        jenisAcara,
+                        binding.etTglEvent.text.toString(),
+                        dateMillis,
+                        choosenTime.sorted().joinToString(),
+                        binding.etDeskripsi.text.toString())
+                saveClick(schedule)
+                dismiss()
+
             }else{
-                binding.spJenisAcara.selectedItem.toString()
+                Toast.makeText(context, "Harap isi dengan lengkap", Toast.LENGTH_SHORT).show()
             }
 
 
-
-
-
-
-            val schedule =
-                Schedule(null,
-                    jenisAcara,
-                    binding.etTglEvent.text.toString(),
-                    dateMillis,
-                    choosenTime.sorted().joinToString(),
-                    binding.etDeskripsi.text.toString())
-            saveClick(schedule)
-            dismiss()
         }
     }
 
