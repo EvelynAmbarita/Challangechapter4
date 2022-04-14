@@ -22,9 +22,8 @@ import kotlinx.coroutines.launch
 class RegisterFragment : Fragment() {
 
     private var _binding: FragmentRegisterBinding? = null
-    private var myDatabase: MyDatabase? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+
+    lateinit var authRepository: AuthRepository
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -38,7 +37,7 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        myDatabase = MyDatabase.getInstance(requireContext())
+        authRepository = AuthRepository(requireContext())
 
         binding.btnRegister.setOnClickListener {
 
@@ -56,7 +55,7 @@ class RegisterFragment : Fragment() {
 
                 lifecycleScope.launch(Dispatchers.IO) {
 
-                    val isEmailExist = myDatabase?.userDao()?.checkEmailExist(email)
+                    val isEmailExist = authRepository.checkEmailIfExist(email)
 
                     activity?.runOnUiThread {
                         if (isEmailExist == null){
@@ -78,8 +77,9 @@ class RegisterFragment : Fragment() {
     private fun registerUser(user: User){
         lifecycleScope.launch(Dispatchers.IO) {
             
-            val registeredUser = myDatabase?.userDao()?.insertUser(user)
+//            val registeredUser = myDatabase?.userDao()?.insertUser(user)
 
+            val registeredUser = authRepository.register(user)
 
             activity?.runOnUiThread {
                 if (registeredUser == (0).toLong()){

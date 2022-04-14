@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
@@ -49,14 +50,12 @@ class ListScheduleFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         myDatabase = MyDatabase.getInstance(requireContext())
+
+
 
         val sharedPreference = requireContext()
             .getSharedPreferences(MainActivity.SHARED_FILE, Context.MODE_PRIVATE)
@@ -72,15 +71,9 @@ class ListScheduleFragment : Fragment() {
             val action = ListScheduleFragmentDirections.actionListScheduleFragmentToLoginFragment()
             it.findNavController().navigate(action)
 
-//            activity?.onBackPressed()
-
-//            findNavController().popBackStack()
-
-//            Toast.makeText(context, "test", Toast.LENGTH_SHORT).show()
         }
 
         initAction()
-
 
         adapter = ScheduleAdapter(
             delClick = { schedule ->
@@ -95,9 +88,9 @@ class ListScheduleFragment : Fragment() {
                         snackbar.dismiss()
                     }.show()
                 })
-                confirmDialog.setNegativeButton("Cancel",DialogInterface.OnClickListener{dialogInterface, i ->
+                confirmDialog.setNegativeButton("Cancel") { dialogInterface, i ->
                     dialogInterface.dismiss()
-                })
+                }
                 confirmDialog.create().show()
 
 
@@ -170,6 +163,11 @@ class ListScheduleFragment : Fragment() {
                 }else{
                     binding.tvEmptyList.visibility = View.GONE
                 }
+
+//                val spinnerAdapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
+//                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                spinner.setAdapter(spinnerAdapter)
+
             }
 
         }
@@ -194,10 +192,8 @@ class ListScheduleFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
 
-                //remove fromView
 
                 val schedule = (viewHolder as ScheduleAdapter.ViewHolder).getSchedule
-                val itemPosition = (viewHolder).currentPosition
                 val confirmDialog = AlertDialog.Builder(requireContext())
                 confirmDialog.setTitle("Konfirmasi Hapus")
                 confirmDialog.setMessage("Apakah anda yakin inigin menghapus schedule ini?")
@@ -206,24 +202,10 @@ class ListScheduleFragment : Fragment() {
 
                     deleteData(schedule)
 
-//                    val afterDelete = adapter.currentList.toMutableList()
-//                    afterDelete.removeAt(itemPosition)
-//                    adapter.submitList(afterDelete)
-//                    adapter.notifyItemRemoved(itemPosition)
-
                     val snackbar = Snackbar.make(binding.root,"Berhasil Delete!", Snackbar.LENGTH_LONG)
-//                    snackbar.addCallback(object : Snackbar.Callback() {
-//                        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-//                            super.onDismissed(transientBottomBar, event)
-//                            if (event == DISMISS_EVENT_TIMEOUT){
-//                                deleteData(schedule)
-//                            }
-//                        }
-//                    })
+
                     snackbar.setAction("OK") {
                         snackbar.dismiss()
-//                        adapter.currentList.toMutableList().add(itemPosition,schedule)
-//                        adapter.notifyItemInserted(itemPosition)
                     }
                     snackbar.show()
 

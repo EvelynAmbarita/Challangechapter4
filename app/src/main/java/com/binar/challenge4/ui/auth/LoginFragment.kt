@@ -27,7 +27,7 @@ class LoginFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private var myDatabase: MyDatabase? = null
+//    private var myDatabase: MyDatabase? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,7 +39,8 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        myDatabase = MyDatabase.getInstance(requireContext())
+//        myDatabase = MyDatabase.getInstance(requireContext())
+        val authRepository = AuthRepository(requireContext())
         val sharedPreference = requireContext()
             .getSharedPreferences(MainActivity.SHARED_FILE, Context.MODE_PRIVATE)
 
@@ -50,15 +51,17 @@ class LoginFragment : Fragment() {
                 val rawPassword = binding.etPassword.text.toString()
                 val password = AESEncyption.encrypt(rawPassword).toString()
 
+
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val isLogin = myDatabase?.userDao()?.login(email, password)
+//                    val isLogin = myDatabase?.userDao()?.login(email, password)
+                    val isLogin = authRepository.login(email, password)
 
                     activity?.runOnUiThread {
                         if (isLogin == null){
                             Toast.makeText(context, "Pastikan email dan password benar", Toast.LENGTH_SHORT).show()
                         }else{
                             val editor = sharedPreference.edit()
-                            editor.putString("email",email)
+                            editor.putString("islogin",email)
                             editor.putString("name",isLogin.name)
                             editor.apply()
                             val action = LoginFragmentDirections
