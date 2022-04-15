@@ -7,13 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.binar.challenge4.R
 import com.binar.challenge4.data.User
-import com.binar.challenge4.database.MyDatabase
-import com.binar.challenge4.databinding.FragmentLoginBinding
 import com.binar.challenge4.databinding.FragmentRegisterBinding
+import com.binar.challenge4.ui.repository.AuthRepository
 import com.binar.challenge4.utils.AESEncyption
 import com.binar.challenge4.utils.ValidationForm.isValid
 import kotlinx.coroutines.Dispatchers

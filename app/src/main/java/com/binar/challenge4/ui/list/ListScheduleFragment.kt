@@ -24,6 +24,7 @@ import com.binar.challenge4.database.MyDatabase
 import com.binar.challenge4.databinding.FragmentListScheduleBinding
 import com.binar.challenge4.databinding.FragmentRegisterBinding
 import com.binar.challenge4.ui.form.FormFragment
+import com.binar.challenge4.ui.repository.ScheduleRepository
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
@@ -35,8 +36,9 @@ import kotlinx.coroutines.launch
 
 class ListScheduleFragment : Fragment() {
 
+    lateinit var scheduleRepository: ScheduleRepository
     private var _binding: FragmentListScheduleBinding? = null
-    private var myDatabase: MyDatabase? = null
+//    private var myDatabase: MyDatabase? = null
     private val binding get() = _binding!!
 
     private lateinit var adapter:ScheduleAdapter
@@ -53,7 +55,8 @@ class ListScheduleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        myDatabase = MyDatabase.getInstance(requireContext())
+        scheduleRepository = ScheduleRepository(requireContext())
+//        myDatabase = MyDatabase.getInstance(requireContext())
 
 
 
@@ -99,7 +102,8 @@ class ListScheduleFragment : Fragment() {
                 val dialog = FormFragment(schedule)
                 dialog.editClick = {
                     lifecycleScope.launch(Dispatchers.IO) {
-                        val result = myDatabase?.scheduleDao()?.updateSchedule(it)
+//                        val result = myDatabase?.scheduleDao()?.updateSchedule(it)
+                        val result = scheduleRepository.updateSchedule(it)
                         activity?.runOnUiThread {
                             if (result == (0)){
                                 Toast.makeText(context,
@@ -124,7 +128,8 @@ class ListScheduleFragment : Fragment() {
 
             dialog.saveClick = {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val result = myDatabase?.scheduleDao()?.insertSchedule(it)
+//                    val result = myDatabase?.scheduleDao()?.insertSchedule(it)
+                    val result = scheduleRepository.addSchedule(it)
                     activity?.runOnUiThread {
                         if (result == (0).toLong()){
                             Toast.makeText(context,
@@ -151,8 +156,9 @@ class ListScheduleFragment : Fragment() {
 
     private fun fetchData(){
         lifecycleScope.launch(Dispatchers.IO) {
-            val myDb = myDatabase?.scheduleDao()
-            val listStudent = myDb?.getAllSchedule()
+//            val myDb = myDatabase?.scheduleDao()
+//            val listStudent = myDb?.getAllSchedule()
+            val listStudent = scheduleRepository.getAllSchedule()
 
             activity?.runOnUiThread {
                 listStudent?.let {
@@ -224,7 +230,8 @@ class ListScheduleFragment : Fragment() {
 
     private fun deleteData(schedule: Schedule){
         lifecycleScope.launch(Dispatchers.IO) {
-            val result = myDatabase?.scheduleDao()?.deleteSchedule(schedule)
+//            val result = myDatabase?.scheduleDao()?.deleteSchedule(schedule)
+            val result = scheduleRepository.deleteSchedule(schedule)
 
             activity?.runOnUiThread {
                 if (result == 0) {

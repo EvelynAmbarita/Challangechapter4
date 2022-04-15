@@ -1,4 +1,4 @@
-package com.binar.challenge4.ui.auth
+package com.binar.challenge4.ui.repository
 
 import android.content.Context
 import com.binar.challenge4.data.User

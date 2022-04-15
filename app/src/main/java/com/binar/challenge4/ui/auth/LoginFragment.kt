@@ -1,7 +1,6 @@
 package com.binar.challenge4.ui.auth
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,12 +10,11 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.binar.challenge4.MainActivity
-import com.binar.challenge4.database.MyDatabase
 import com.binar.challenge4.databinding.FragmentLoginBinding
+import com.binar.challenge4.ui.repository.AuthRepository
 import com.binar.challenge4.utils.AESEncyption
 import com.binar.challenge4.utils.ValidationForm.isValid
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 

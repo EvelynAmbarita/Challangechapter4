@@ -1,28 +1,20 @@
 package com.binar.challenge4.ui.form
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
-import androidx.core.view.get
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.binar.challenge4.R
 import com.binar.challenge4.data.Schedule
-import com.binar.challenge4.database.MyDatabase
 import com.binar.challenge4.databinding.FragmentFormBinding
-import com.binar.challenge4.databinding.FragmentListScheduleBinding
 import com.binar.challenge4.ui.calendar.CalendarFragment
-import com.binar.challenge4.ui.list.ScheduleAdapter
+import com.binar.challenge4.ui.repository.ScheduleRepository
 import com.binar.challenge4.utils.DateConverter
 import com.binar.challenge4.utils.SetIdSpinner
 import com.binar.challenge4.utils.ValidationForm
@@ -30,13 +22,8 @@ import com.binar.challenge4.utils.ValidationForm.isValidOnly
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.lang.IllegalStateException
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -46,9 +33,10 @@ class FormFragment(private val schedule: Schedule?): BottomSheetDialogFragment()
     var editClick:(Schedule)->Unit = {}
 
     private val choosenTime = ArrayList<Int>()
+    lateinit var scheduleRepository: ScheduleRepository
 
     private var _binding: FragmentFormBinding? = null
-    private var myDatabase: MyDatabase? = null
+//    private var myDatabase: MyDatabase? = null
     private val binding get() = _binding!!
     private var dateMillis = System.currentTimeMillis()
 
@@ -66,7 +54,7 @@ class FormFragment(private val schedule: Schedule?): BottomSheetDialogFragment()
 //    val builder = BottomSheetDialog(requireContext(),R.style.SheetDialog)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        myDatabase = MyDatabase.getInstance(requireContext())
+//        myDatabase = MyDatabase.getInstance(requireContext())
         _binding = FragmentFormBinding.inflate(layoutInflater)
 
         val bottomSheet = BottomSheetDialog(requireContext(),R.style.SheetDialog)
@@ -82,6 +70,8 @@ class FormFragment(private val schedule: Schedule?): BottomSheetDialogFragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        scheduleRepository = ScheduleRepository(requireContext())
 
         binding.apply {
             etTglEvent.isEnabled = false
@@ -206,8 +196,9 @@ class FormFragment(private val schedule: Schedule?): BottomSheetDialogFragment()
                 availabelChoosenTime.add("3")
 
                 lifecycleScope.launch(Dispatchers.IO){
-                    val selectedDateList = myDatabase?.scheduleDao()
-                        ?.getSelectedDaySchedule(binding.etTglEvent.text.toString())
+//                    val selectedDateList = myDatabase?.scheduleDao()
+//                        ?.getSelectedDaySchedule(binding.etTglEvent.text.toString())
+                    val selectedDateList = scheduleRepository.getSelectedDaySchedule(binding.etTglEvent.text.toString())
                     activity?.runOnUiThread {
                         selectedDateList?.forEach { currentDate ->
                             if (currentDate.id != schedule.id){
@@ -284,8 +275,9 @@ class FormFragment(private val schedule: Schedule?): BottomSheetDialogFragment()
             availabelChoosenTime.addAll(arrayListOf("1","2","3"))
 
             lifecycleScope.launch(Dispatchers.IO){
-                val selectedDateList = myDatabase?.scheduleDao()
-                    ?.getSelectedDaySchedule(binding.etTglEvent.text.toString())
+//                val selectedDateList = myDatabase?.scheduleDao()
+//                    ?.getSelectedDaySchedule(binding.etTglEvent.text.toString())
+                val selectedDateList = scheduleRepository.getSelectedDaySchedule(binding.etTglEvent.text.toString())
                 activity?.runOnUiThread {
                     selectedDateList?.forEach { currentDate ->
                         val selectedChoosenTime = currentDate.choosenTime.split(",").map {
